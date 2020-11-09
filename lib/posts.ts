@@ -3,6 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import remark from "remark";
 import html from "remark-html";
+import { number } from "prop-types";
 
 const postsDirectory = path.join(process.cwd(), "posts");
 
@@ -21,10 +22,15 @@ export function getSortedPostsData() {
     const matterResult = matter(fileContents).data;
 
     // Combine the data with the id
-    return {
+    const data: {
+      id: string;
+      title?: string;
+      date?: string;
+    } = {
       id,
       ...matterResult,
     };
+    return data;
   });
 
   // Sort posts by date
