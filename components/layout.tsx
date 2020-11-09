@@ -9,7 +9,7 @@ export const siteTitle = "My Website";
 
 interface Props {
   children: ReactNode;
-  home: boolean;
+  home?: boolean;
 }
 
 /* 色んな所で使う、ラップ用のコンポーネント */
