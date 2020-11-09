@@ -1,6 +1,6 @@
+import React from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { ReactNode } from "react";
 import styles from "./layout.module.css";
 import utilStyles from "../styles/utils.module.css";
 
@@ -8,12 +8,11 @@ const name = "Masa";
 export const siteTitle = "My Website";
 
 interface Props {
-  children: ReactNode;
+  children: React.ReactNode;
   home?: boolean;
 }
 
-/* 色んな所で使う、ラップ用のコンポーネント */
-export default function Layout({ children, home }: Props) {
+const Layout: React.FC<Props> = ({ children, home }) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -73,4 +72,6 @@ export default function Layout({ children, home }: Props) {
       )}
     </div>
   );
-}
+};
+
+export default Layout;

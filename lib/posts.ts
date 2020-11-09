@@ -3,11 +3,27 @@ import path from "path";
 import matter from "gray-matter";
 import remark from "remark";
 import html from "remark-html";
-import { number } from "prop-types";
+
+export type { PostData, PostDetailData };
+export { getSortedPostsData, getPostData, getAllPostIds };
+
+interface BasePostData {
+  title?: string;
+  date?: string;
+}
+
+interface PostData extends BasePostData {
+  id: string;
+}
+
+interface PostDetailData extends BasePostData {
+  id: string | string[];
+  contentHtml: string;
+}
 
 const postsDirectory = path.join(process.cwd(), "posts");
 
-export function getSortedPostsData() {
+function getSortedPostsData() {
   // Get file names under /posts
   const fileNames = fs.readdirSync(postsDirectory);
   const allPostsData = fileNames.map((fileName) => {
@@ -22,11 +38,7 @@ export function getSortedPostsData() {
     const matterResult = matter(fileContents).data;
 
     // Combine the data with the id
-    const data: {
-      id: string;
-      title?: string;
-      date?: string;
-    } = {
+    const data: PostData = {
       id,
       ...matterResult,
     };
@@ -43,31 +55,7 @@ export function getSortedPostsData() {
   });
 }
 
-export function getAllPostIds() {
-  const fileNames = fs.readdirSync(postsDirectory);
-  // Returns an array that looks like this:
-  // [
-  //   {
-  //     params: {
-  //       id: 'ssg-ssr'
-  //     }
-  //   },
-  //   {
-  //     params: {
-  //       id: 'pre-rendering'
-  //     }
-  //   }
-  // ]
-  return fileNames.map((fileName) => {
-    return {
-      params: {
-        id: fileName.replace(/\.md/, ""),
-      },
-    };
-  });
-}
-
-export async function getPostData(id: string | string[]) {
+async function getPostData(id: string | string[]) {
   const fullPath = path.join(postsDirectory, `${id}.md`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const matterResult = matter(fileContents);
@@ -77,9 +65,36 @@ export async function getPostData(id: string | string[]) {
     .process(matterResult.content);
   const contentHtml = processedContent.toString();
 
-  return {
+  const data: PostDetailData = {
     id,
     contentHtml,
     ...matterResult.data,
   };
+  return data;
+}
+
+/*
+  Returns an array that looks like this:
+  [
+    {
+      params: {
+        id: 'ssg-ssr'
+      }
+    },
+    {
+      params: {
+        id: 'pre-rendering'
+      }
+    }
+  ]
+* */
+function getAllPostIds() {
+  const fileNames = fs.readdirSync(postsDirectory);
+  return fileNames.map((fileName) => {
+    return {
+      params: {
+        id: fileName.replace(/\.md/, ""),
+      },
+    };
+  });
 }

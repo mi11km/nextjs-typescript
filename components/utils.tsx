@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-export function Clock() {
+export { Clock, urlTransition };
+
+function Clock() {
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
@@ -16,7 +18,7 @@ export function Clock() {
   return <h1 className="clock">{date.toLocaleString()}</h1>;
 }
 
-export function urlTransition() {
+function urlTransition() {
   const [url, setUrl] = useState("https:example.com");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
