@@ -1,9 +1,10 @@
 // import App from "next/app";
-import type { AppProps /*, AppContext */ } from "next/app";
-import "../styles/globals.css";
+import '../styles/globals.css';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+import type { AppProps /*, AppContext */ } from 'next/app';
+
+function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+    return <Component {...pageProps} />;
 }
 
 // Only uncomment this method if you have blocking data requirements for
