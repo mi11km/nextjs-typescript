@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
 export const Counter: React.FC = () => {
     const [count, setCount] = useState(0);
@@ -25,23 +25,24 @@ export const Counter: React.FC = () => {
 };
 
 export const App: React.FC<AppProps> = (props) => {
-    const [name, setName] = useState(props.name);
-    const [price, setPrice] = useState(props.price);
+    const [state, setState] = useState(props); // オブジェクトもいけちゃう
+    const { name, price } = state;
 
-    const reset = () => {
-        setPrice(0);
-        setName(props.name);
+    const setName = (e: ChangeEvent<HTMLInputElement>) => {
+        setState({ ...state, name: e.target.value });
     };
-
+    const setPrice = (num: number) => {
+        setState({ ...state, price: price + num });
+    };
     return (
         <>
             <p>
                 現在の{name}は、{price}円です。
             </p>
-            <button onClick={() => setPrice(price + 100)}>+100</button>
-            <button onClick={() => setPrice(price - 100)}>-100</button>
-            <button onClick={reset}>reset</button>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+            <button onClick={() => setPrice(100)}>+100</button>
+            <button onClick={() => setPrice(-100)}>-100</button>
+            <button onClick={() => setState(props)}>reset</button>
+            <input type="text" value={name} onChange={setName} />
         </>
     );
 };
