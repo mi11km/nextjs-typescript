@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { App, Counter } from '../../components/hooks/BasicState';
+import { Effect } from '../../components/hooks/BasicEffect';
 
 const Hooks: React.FC = () => {
     return (
         <React.Fragment>
             <div>
-                <Counter />
-                <App name="ぺんぺん" price={100} />
+                <Effect />
             </div>
             <style jsx>{`
                 div {
