@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from 'react';
 
-import reducer, { EventType } from '../../reducers';
+import reducer, { Event, EventAction, EventType } from '../../reducers';
 
 const Hooks: React.FC = () => {
     const [state, dispatch] = useReducer(reducer, []);
@@ -16,6 +16,12 @@ const Hooks: React.FC = () => {
         });
         setTitle('');
         setBody('');
+    };
+
+    const deleteAllEvents = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (confirm('全てのイベントを本当に削除しても良いですか？'))
+            dispatch({ type: EventType.DELETE_ALL_EVENTS });
     };
 
     return (
@@ -42,8 +48,12 @@ const Hooks: React.FC = () => {
                     />
 
                     <br />
-                    <button onClick={addEvent}>イベントを作成する</button>
-                    <button>全てのイベントを削除する</button>
+                    <button onClick={addEvent} disabled={title === '' || body === ''}>
+                        イベントを作成する
+                    </button>
+                    <button onClick={deleteAllEvents} disabled={state.length === 0}>
+                        全てのイベントを削除する
+                    </button>
                 </form>
 
                 <h2>イベント一覧</h2>
@@ -56,7 +66,11 @@ const Hooks: React.FC = () => {
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        {state.map((event, index) => (
+                            <EventComponent key={index} event={event} dispatch={dispatch} />
+                        ))}
+                    </tbody>
                 </table>
             </div>
             <style jsx>{`
@@ -66,6 +80,7 @@ const Hooks: React.FC = () => {
 
                 table {
                     margin: 0 auto;
+                    width: 100%;
                 }
             `}</style>
         </React.Fragment>
@@ -73,3 +88,29 @@ const Hooks: React.FC = () => {
 };
 
 export default Hooks;
+
+interface EventProps {
+    event: Event;
+    dispatch: (action: EventAction) => void;
+}
+
+const EventComponent: React.FC<EventProps> = ({ event, dispatch }) => {
+    const id = event.id;
+    const deleteEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (confirm(`イベント(id=${id})を削除しても良いですか？`))
+            dispatch({ type: EventType.DELETE_EVENT, id: id });
+    };
+    return (
+        <tr>
+            <td>{id}</td>
+            <td>{event.title}</td>
+            <td>{event.body}</td>
+            <td>
+                <button type="button" onClick={deleteEvent}>
+                    削除
+                </button>
+            </td>
+        </tr>
+    );
+};
