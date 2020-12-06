@@ -1,27 +1,28 @@
-import React, { useReducer, useState } from 'react';
+import React, { useContext, useReducer, useState } from 'react';
 
-import reducer, { Event, EventsAction, EventType } from '../../reducers';
+import AppContext from '../../contexts/AppContext';
+import reducer, { Event, EventType } from '../../reducers';
 
 const Hooks: React.FC = () => {
     const [state, dispatch] = useReducer(reducer, []);
 
     return (
-        <React.Fragment>
-            <EventFrom state={state} dispatch={dispatch} />
-            <EventsComponent state={state} dispatch={dispatch} />
-        </React.Fragment>
+        <AppContext.Provider value={{ state, dispatch }}>
+            <EventFrom />
+            <EventsComponent />
+        </AppContext.Provider>
     );
 };
 
 export default Hooks;
 
-interface EventProps {
-    event?: Event;
-    state?: Event[];
-    dispatch: (action: EventsAction) => void;
+interface EventComponentProps {
+    event: Event;
 }
 
-const EventComponent: React.FC<EventProps> = ({ event, dispatch }) => {
+const EventComponent: React.FC<EventComponentProps> = ({ event }) => {
+    const { dispatch } = useContext(AppContext);
+
     const id = event.id;
     const deleteEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -42,7 +43,44 @@ const EventComponent: React.FC<EventProps> = ({ event, dispatch }) => {
     );
 };
 
-const EventFrom: React.FC<EventProps> = ({ state, dispatch }) => {
+const EventsComponent: React.FC = () => {
+    const { state } = useContext(AppContext);
+
+    return (
+        <>
+            <h2>イベント一覧</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>タイトル</th>
+                        <th>ボディー</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {state.map((event, index) => (
+                        <EventComponent key={index} event={event} />
+                    ))}
+                </tbody>
+            </table>
+
+            <style jsx>{`
+                h2 {
+                    text-align: center;
+                }
+
+                table {
+                    margin: 0 auto;
+                    width: 100%;
+                }
+            `}</style>
+        </>
+    );
+};
+
+const EventFrom: React.FC = () => {
+    const { state, dispatch } = useContext(AppContext);
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
 
@@ -96,40 +134,6 @@ const EventFrom: React.FC<EventProps> = ({ state, dispatch }) => {
                 form,
                 h2 {
                     text-align: center;
-                }
-            `}</style>
-        </>
-    );
-};
-
-const EventsComponent: React.FC<EventProps> = ({ state, dispatch }) => {
-    return (
-        <>
-            <h2>イベント一覧</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>タイトル</th>
-                        <th>ボディー</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {state.map((event, index) => (
-                        <EventComponent key={index} event={event} dispatch={dispatch} />
-                    ))}
-                </tbody>
-            </table>
-
-            <style jsx>{`
-                h2 {
-                    text-align: center;
-                }
-
-                table {
-                    margin: 0 auto;
-                    width: 100%;
                 }
             `}</style>
         </>

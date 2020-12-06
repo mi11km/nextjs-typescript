@@ -52,10 +52,6 @@ const Home: React.FC<Props> = ({ allPostsData }) => {
                     ))}
                 </ul>
             </section>
-
-            <Link href="/hooks">
-                <a>To hooks page</a>
-            </Link>
         </Layout>
     );
 };
