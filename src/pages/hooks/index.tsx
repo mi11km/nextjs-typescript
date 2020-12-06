@@ -4,85 +4,11 @@ import reducer, { Event, EventAction, EventType } from '../../reducers';
 
 const Hooks: React.FC = () => {
     const [state, dispatch] = useReducer(reducer, []);
-    const [title, setTitle] = useState('');
-    const [body, setBody] = useState('');
-
-    const addEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        dispatch({
-            type: EventType.CREATE_EVENT,
-            title: title,
-            body: body
-        });
-        setTitle('');
-        setBody('');
-    };
-
-    const deleteAllEvents = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        if (confirm('全てのイベントを本当に削除しても良いですか？'))
-            dispatch({ type: EventType.DELETE_ALL_EVENTS });
-    };
 
     return (
         <React.Fragment>
-            <div>
-                <h2>イベント作成フォーム</h2>
-                <form>
-                    <label htmlFor="formEventTitle">タイトル</label>
-                    <input
-                        type="text"
-                        id="formEventTitle"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                    <br />
-                    <label htmlFor="formEventBody">ボディー</label>
-                    <textarea
-                        name="body"
-                        id="formEventBody"
-                        cols={30}
-                        rows={5}
-                        value={body}
-                        onChange={(e) => setBody(e.target.value)}
-                    />
-
-                    <br />
-                    <button onClick={addEvent} disabled={title === '' || body === ''}>
-                        イベントを作成する
-                    </button>
-                    <button onClick={deleteAllEvents} disabled={state.length === 0}>
-                        全てのイベントを削除する
-                    </button>
-                </form>
-
-                <h2>イベント一覧</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>タイトル</th>
-                            <th>ボディー</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {state.map((event, index) => (
-                            <EventComponent key={index} event={event} dispatch={dispatch} />
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            <style jsx>{`
-                div {
-                    text-align: center;
-                }
-
-                table {
-                    margin: 0 auto;
-                    width: 100%;
-                }
-            `}</style>
+            <EventFrom dispatch={dispatch} state={state} />
+            <EventsComponent state={state} dispatch={dispatch} />
         </React.Fragment>
     );
 };
@@ -90,8 +16,9 @@ const Hooks: React.FC = () => {
 export default Hooks;
 
 interface EventProps {
-    event: Event;
+    event?: Event;
     dispatch: (action: EventAction) => void;
+    state?: Event[];
 }
 
 const EventComponent: React.FC<EventProps> = ({ event, dispatch }) => {
@@ -112,5 +39,99 @@ const EventComponent: React.FC<EventProps> = ({ event, dispatch }) => {
                 </button>
             </td>
         </tr>
+    );
+};
+
+const EventFrom: React.FC<EventProps> = ({ dispatch, state }) => {
+    const [title, setTitle] = useState('');
+    const [body, setBody] = useState('');
+
+    const addEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        dispatch({
+            type: EventType.CREATE_EVENT,
+            title: title,
+            body: body
+        });
+        setTitle('');
+        setBody('');
+    };
+
+    const deleteAllEvents = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (confirm('全てのイベントを本当に削除しても良いですか？'))
+            dispatch({ type: EventType.DELETE_ALL_EVENTS });
+    };
+    return (
+        <>
+            <h2>イベント作成フォーム</h2>
+            <form>
+                <label htmlFor="formEventTitle">タイトル</label>
+                <input
+                    type="text"
+                    id="formEventTitle"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
+                <br />
+                <label htmlFor="formEventBody">ボディー</label>
+                <textarea
+                    name="body"
+                    id="formEventBody"
+                    cols={30}
+                    rows={5}
+                    value={body}
+                    onChange={(e) => setBody(e.target.value)}
+                />
+
+                <br />
+                <button onClick={addEvent} disabled={title === '' || body === ''}>
+                    イベントを作成する
+                </button>
+                <button onClick={deleteAllEvents} disabled={state.length === 0}>
+                    全てのイベントを削除する
+                </button>
+            </form>
+            <style jsx>{`
+                form,
+                h2 {
+                    text-align: center;
+                }
+            `}</style>
+        </>
+    );
+};
+
+const EventsComponent: React.FC<EventProps> = ({ state, dispatch }) => {
+    return (
+        <>
+            <h2>イベント一覧</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>タイトル</th>
+                        <th>ボディー</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {state.map((event, index) => (
+                        <EventComponent key={index} event={event} dispatch={dispatch} />
+                    ))}
+                </tbody>
+            </table>
+
+            <style jsx>{`
+                h2 {
+                    text-align: center;
+                }
+
+                table {
+                    margin: 0 auto;
+                    width: 100%;
+                }
+            `}</style>
+        </>
     );
 };
