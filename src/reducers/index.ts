@@ -21,14 +21,14 @@ export type Event = {
     title: string;
     body: string;
 };
-export type EventAction = {
+export type EventsAction = {
     type: EventType;
     id?: number;
     title?: string;
     body?: string;
 };
 
-const events = (state: Event[] = [], action: EventAction): Event[] => {
+const events = (state: Event[] = [], action: EventsAction): Event[] => {
     switch (action.type) {
         case EventType.CREATE_EVENT: {
             const event = { title: action.title, body: action.body };

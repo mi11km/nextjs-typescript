@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from 'react';
 
-import reducer, { Event, EventAction, EventType } from '../../reducers';
+import reducer, { Event, EventsAction, EventType } from '../../reducers';
 
 const Hooks: React.FC = () => {
     const [state, dispatch] = useReducer(reducer, []);
@@ -17,7 +17,7 @@ export default Hooks;
 
 interface EventProps {
     event?: Event;
-    dispatch: (action: EventAction) => void;
+    dispatch: (action: EventsAction) => void;
     state?: Event[];
 }
 
