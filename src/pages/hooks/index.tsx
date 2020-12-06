@@ -7,7 +7,7 @@ const Hooks: React.FC = () => {
 
     return (
         <React.Fragment>
-            <EventFrom dispatch={dispatch} state={state} />
+            <EventFrom state={state} dispatch={dispatch} />
             <EventsComponent state={state} dispatch={dispatch} />
         </React.Fragment>
     );
@@ -17,8 +17,8 @@ export default Hooks;
 
 interface EventProps {
     event?: Event;
-    dispatch: (action: EventsAction) => void;
     state?: Event[];
+    dispatch: (action: EventsAction) => void;
 }
 
 const EventComponent: React.FC<EventProps> = ({ event, dispatch }) => {
@@ -42,7 +42,7 @@ const EventComponent: React.FC<EventProps> = ({ event, dispatch }) => {
     );
 };
 
-const EventFrom: React.FC<EventProps> = ({ dispatch, state }) => {
+const EventFrom: React.FC<EventProps> = ({ state, dispatch }) => {
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
 
